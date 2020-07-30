@@ -1,34 +1,61 @@
 let allBtn = document.querySelectorAll(".grid-item")
 let output = document.querySelector(".display__bottom")
 let allOutput = document.querySelector(".display__top")
+let backSpaceBtn = allBtn[16]
+let isUpRe = false
+let isError = false
+let gridContainer = document.querySelector(".grid-container")
+
 
 let fillInput = (input) =>{
+    if(isUpRe){
+        clearBtn()
+        isUpRe = false
+    }
     if (output.innerHTML == 0) output.innerHTML=""
     output.innerHTML+=input
 }
-
+ 
 let backSpace = () =>{
-    console.log("dsf");
     if (output.innerHTML != 0) 
         output.innerHTML = output.innerHTML.substring(0,output.innerHTML.length-1)
     if(output.innerHTML =="") output.innerHTML = 0
 }
 
-let clearBut = () => {
+let clearBtn = () => {
+    allOutput.innerHTML = ""
     output.innerHTML = 0
 }
 
 let moveOutput = (op) => {
-    allOutput.innerHTML += (output.innerHTML+" "+op+" ")
-    clearBut()
+    if(!isUpRe){
+        allOutput.innerHTML += (output.innerHTML+" "+op+" ")
+    }else{
+        if(isError){
+            clearBtn()
+            isError = !isError
+        }else{
+            allOutput.innerHTML = output.innerHTML+" "+op+" "
+            output.innerHTML = ""
+        }
+        
+        isUpRe = !isUpRe
+    }
+    output.innerHTML = 0
 }
 
-let press_add = () =>{
-    moveOutput("+")
+let equleBtn = () => {
+    if(!isUpRe){
+        let re = equle(allOutput.innerText+" "+ output.innerText);
+        moveOutput("=")
+        if( re+"" =="NaN"  || re ==Infinity ){
+            re = "Result_is_undefined"
+            isError = true
+        }
+        isUpRe = true
+        output.innerText = re
+    }
 }
-let press_div = (A, B) => A / B
-let press_sub = (A, B) => A - B
-let press_mult = (A, B) => A * B
 
 //EventListener
 allBtn.forEach((e)=>{
@@ -36,6 +63,7 @@ allBtn.forEach((e)=>{
         event.currentTarget.classList.toggle("grid-item__mousedown");
     })
 })
+
 
 allBtn.forEach((e)=>{
     e.addEventListener("mouseup",(event)=>{
@@ -47,31 +75,32 @@ allBtn.forEach((e)=>{
                 isNamber = true
             }
         })
+        if(backSpaceBtn == event.currentTarget){
+            backSpace()
+        }
         if(isNamber){
             fillInput(El.innerText);
         }else{
             switch (El.innerText) {
                 case '-':
-                    console.log("-");
                     moveOutput("-")
                     break;
                 case '*':
-                    console.log("*");
                     moveOutput("*")
                     break;
                 case '/':
-                    console.log("/");
                     moveOutput("/")
                     break;
                 case '+':
-                    console.log("+");
                     moveOutput("+")
                     break;
-                case 61:
+                case "=":
+                    equleBtn()
                     console.log("=");
-                    // =
-                    break;        
-        
+                    break; 
+                case "Clear":
+                    clearBtn()
+                    break;         
                 default:
                     break;
             }
@@ -87,40 +116,34 @@ document.addEventListener('keypress', (e) => {
     }
     switch (keyCode) {
         case 45:
-            console.log("-");
             moveOutput("-")
             break;
         case 42:
-            console.log("*");
             moveOutput("*")
-            // *
             break;
         case 47:
-            console.log("/");
             moveOutput("/")
-            // /
             break;
         case 43:
-            console.log("+");
             moveOutput("+")
-            // +
             break;
         case 61:
-            console.log("=");
-            // =
+            equleBtn()
             break;        
-
         default:
             break;
     }
 })
+
 document.addEventListener('keydown', (e) => {
     if(e.key == "Backspace"){
         backSpace()
     }
 })
+
 document.addEventListener('keyup', (e) => {
     if(e.keyCode == 13){
-        console.log("Enter");
+        //Enter
+        equleBtn()
     }
 })

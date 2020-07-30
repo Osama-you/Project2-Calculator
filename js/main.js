@@ -8,7 +8,7 @@ let mult = (A, B) => A * B
 
 // take to input and op then return the result as obj whit message
 let operation = (opr,A,B) => {
-    let result = NaN
+    let result = Infinity
 
     // Check if the input is correct
     if (isNaN(A)||isNaN(B)){
@@ -36,15 +36,22 @@ let operation = (opr,A,B) => {
             return result
     }
     return result
-  }
+}
 
 // take the equation then return the result
 let equle = (input) => {
+    // remove the space
+    input=input.replace(" ","")
+
+    // -3627 + 3 
+    if (input[0] == "-") input = 0 + input
+
     //array of all operation
     let ops = ["+","-","*","/"]
 
     // number array
     let No = []
+
     // operation array
     let Op = []
 
@@ -101,5 +108,5 @@ let equle = (input) => {
     return re
 }
 
-// input = "32+3-4*34-34+2"
+// input = "32+   3*34-34+2"
 // console.log(equle(input))
