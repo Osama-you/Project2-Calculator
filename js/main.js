@@ -108,5 +108,15 @@ let equle = (input) => {
     return re
 }
 
-// input = "32+   3*34-34+2"
-// console.log(equle(input))
+let a = {
+    "USD/ILS":3.41,
+    "ILS/USD":0.29,
+    "EUR/ILS":4.02,
+    "ILS/EUR":0.25
+}
+
+let con = (input,X) =>{
+    input = parseFloat(input)
+    let sy = X.substring(X.indexOf("/")+1,X.lenght)
+    return (input*a[X])+" "+sy
+}

@@ -6,16 +6,14 @@ let isUpRe = false
 let isError = false
 let gridContainer = document.querySelector(".grid-container")
 
-
 let fillInput = (input) =>{
-    if(isUpRe){
+    if(isUpRe || isError){
         clearBtn()
-        isUpRe = false
     }
     if (output.innerHTML == 0) output.innerHTML=""
     output.innerHTML+=input
 }
- 
+
 let backSpace = () =>{
     if (output.innerHTML != 0) 
         output.innerHTML = output.innerHTML.substring(0,output.innerHTML.length-1)
@@ -25,6 +23,8 @@ let backSpace = () =>{
 let clearBtn = () => {
     allOutput.innerHTML = ""
     output.innerHTML = 0
+    isUpRe = false
+    isError = false
 }
 
 let moveOutput = (op) => {
@@ -38,7 +38,6 @@ let moveOutput = (op) => {
             allOutput.innerHTML = output.innerHTML+" "+op+" "
             output.innerHTML = ""
         }
-        
         isUpRe = !isUpRe
     }
     output.innerHTML = 0
@@ -48,13 +47,38 @@ let equleBtn = () => {
     if(!isUpRe){
         let re = equle(allOutput.innerText+" "+ output.innerText);
         moveOutput("=")
-        if( re+"" =="NaN"  || re ==Infinity ){
+        if( re+"" =="NaN"  || re ==Infinity || re ==-Infinity){
             re = "Result_is_undefined"
             isError = true
         }
         isUpRe = true
         output.innerText = re
     }
+}
+let conv = (X) =>{
+    let input = output.innerHTML
+    let re = ""
+    if(isError){
+        clearBtn()
+        return
+    } 
+    if(isUpRe){
+
+        re = con(input,X)
+        clearBtn()
+        
+    }else{
+        if(allOutput.innerText == ""){
+            re = con(input,X)
+            
+        }else{
+            re = "Error"
+        }
+
+    }
+    isUpRe = true
+    isError = true
+    output.innerHTML = re
 }
 
 //EventListener
@@ -63,7 +87,6 @@ allBtn.forEach((e)=>{
         event.currentTarget.classList.toggle("grid-item__mousedown");
     })
 })
-
 
 allBtn.forEach((e)=>{
     e.addEventListener("mouseup",(event)=>{
@@ -96,11 +119,22 @@ allBtn.forEach((e)=>{
                     break;
                 case "=":
                     equleBtn()
-                    console.log("=");
                     break; 
                 case "Clear":
                     clearBtn()
-                    break;         
+                    break;    
+                case "USD/ILS":
+                    conv("USD/ILS")
+                    break;   
+                case "ILS/USD":
+                    conv("ILS/USD")
+                    break;   
+                case "EUR/ILS":
+                    conv("EUR/ILS")
+                    break;   
+                case "ILS/EUR":
+                    conv("ILS/EUR")
+                        break;        
                 default:
                     break;
             }
